@@ -1,92 +1,72 @@
 wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
-    wsi:hasPurpose "To develop a weakly-supervised deep learning framework (CLAM) for multi-class classification of whole slide images (WSIs) in computational pathology using attention-based pooling and instance-level clustering to improve model interpretability and performance." ;
+    wsi:hasPurpose "To develop a high-throughput deep learning toolbox, CLAM, for weakly-supervised classification in computational pathology using attention-based multiple instance learning with instance-level clustering to improve multi-class classification performance and interpretability." ;
     wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" ;
-    wsi:hasMethodology wsi:Patch_Extraction .
+    wsi:hasMethodology wsi:Segmentation .
 
-wsi:Patch_Extraction rdf:type wsi:WSI_Step ;
+wsi:Segmentation rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:SVS ;
+    wsi:hasOutputFormat wsi:Mask ;
+    wsi:usesAlgorithm wsi:Tissue_Segmentation_Algorithm ;
+    wsi:nextStep wsi:Patching .
+
+wsi:Tissue_Segmentation_Algorithm rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Median_Blur_Radius_3 ;
+    wsi:hasParameter wsi:Saturation_Threshold_0.3 ;
+    wsi:hasParameter wsi:Morphological_Closing_Kernel_5x5 ;
+    wsi:hasParameter wsi:Area_Threshold_10000 .
+
+wsi:Patching rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:Mask ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:usesAlgorithm wsi:Exhaustive_Patching_Algorithm ;
     wsi:nextStep wsi:Feature_Extraction .
+
+wsi:Exhaustive_Patching_Algorithm rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Patch_Size_256x256 ;
+    wsi:hasParameter wsi:Magnification_20x ;
+    wsi:hasParameter wsi:Overlap_0.0 .
 
 wsi:Feature_Extraction rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:ResNet50 ;
-    wsi:hasParameter wsi:patch_size_256 ;
-    wsi:hasParameter wsi:magnification_20x ;
-    wsi:hasParameter wsi:batch_size_128 ;
-    wsi:hasParameter wsi:adaptive_mean_pooling ;
+    wsi:usesAlgorithm wsi:ResNet50_Feature_Extraction ;
     wsi:nextStep wsi:Classification .
+
+wsi:ResNet50_Feature_Extraction rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Pretrained_ImageNet ;
+    wsi:hasParameter wsi:Adaptive_Mean_Pooling_3rd_Residual_Block ;
+    wsi:hasParameter wsi:Batch_Size_128 ;
+    wsi:hasParameter wsi:GPU_Batch_Parallelization .
 
 wsi:Classification rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:CSV ;
-    wsi:usesAlgorithm wsi:CLAM ;
-    wsi:hasParameter wsi:attention_pooling ;
-    wsi:hasParameter wsi:instance_level_clustering ;
-    wsi:hasParameter wsi:smooth_svm_loss ;
-    wsi:hasParameter wsi:mutual_exclusivity_assumption ;
-    wsi:hasParameter wsi:batch_size_1 ;
-    wsi:hasParameter wsi:learning_rate_2e-4 ;
-    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
-    wsi:hasParameter wsi:adam_optimizer ;
-    wsi:hasParameter wsi:early_stopping_20_epochs ;
-    wsi:hasParameter wsi:c1_0_7 ;
-    wsi:hasParameter wsi:c2_0_3 ;
-    wsi:hasParameter wsi:B_8 ;
-    wsi:hasParameter wsi:alpha_1_0 ;
-    wsi:hasParameter wsi:tau_1_0 ;
+    wsi:hasOutputFormat wsi:Prediction ;
+    wsi:usesAlgorithm wsi:CLAM_Attention_MultiClass ;
     wsi:nextStep wsi:Visualization .
 
+wsi:CLAM_Attention_MultiClass rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:MultiClass_Attention_Pooling ;
+    wsi:hasParameter wsi:Attention_Network_Weights_Wa_Va_Ua ;
+    wsi:hasParameter wsi:Classifier_Weights_Wc ;
+    wsi:hasParameter wsi:Instance_Clustering_B_8 ;
+    wsi:hasParameter wsi:Smooth_SVM_Loss_Margin_1.0 ;
+    wsi:hasParameter wsi:Smooth_SVM_Loss_Temperature_1.0 ;
+    wsi:hasParameter wsi:Loss_Scaling_c1_0.7 ;
+    wsi:hasParameter wsi:Loss_Scaling_c2_0.3 ;
+    wsi:hasParameter wsi:Adam_Optimizer_Learning_Rate_2e-4 ;
+    wsi:hasParameter wsi:Adam_Optimizer_L2_Weight_Decay_1e-5 ;
+    wsi:hasParameter wsi:Early_Stopping_Patience_20 ;
+    wsi:hasParameter wsi:Max_Epochs_200 .
+
 wsi:Visualization rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:PNG ;
-    wsi:usesAlgorithm wsi:PCA ;
-    wsi:hasParameter wsi:components_50 ;
-    wsi:hasParameter wsi:colormap_diverging ;
-    wsi:hasParameter wsi:transparency_0_5 ;
-    wsi:hasParameter wsi:overlap_95_percent ;
-    wsi:nextStep wsi:Interpretation .
+    wsi:hasInputFormat wsi:Prediction ;
+    wsi:hasOutputFormat wsi:Heatmap ;
+    wsi:usesAlgorithm wsi:Attention_Heatmap_Visualization ;
+    wsi:nextStep wsi:End .
 
-wsi:Interpretation rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:PNG ;
-    wsi:usesAlgorithm wsi:Attention_Heatmap ;
-    wsi:hasParameter wsi:percentile_normalization ;
-    wsi:hasParameter wsi:overlap_95_percent ;
-    wsi:hasParameter wsi:colormap_diverging ;
-    wsi:hasParameter wsi:transparency_0_5 ;
-    wsi:nextStep wsi:Comparative_Analysis .
-
-wsi:Comparative_Analysis rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:CSV ;
-    wsi:usesAlgorithm wsi:MIL ;
-    wsi:hasParameter wsi:max_pooling ;
-    wsi:hasParameter wsi:batch_size_1 ;
-    wsi:hasParameter wsi:learning_rate_2e-4 ;
-    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
-    wsi:hasParameter wsi:adam_optimizer ;
-    wsi:hasParameter wsi:early_stopping_20_epochs ;
-    wsi:nextStep wsi:Multi_Class_MIL .
-
-wsi:Multi_Class_MIL rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:CSV ;
-    wsi:usesAlgorithm wsi:mMIL ;
-    wsi:hasParameter wsi:max_pooling ;
-    wsi:hasParameter wsi:batch_size_1 ;
-    wsi:hasParameter wsi:learning_rate_2e-4 ;
-    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
-    wsi:hasParameter wsi:adam_optimizer ;
-    wsi:hasParameter wsi:early_stopping_20_epochs ;
-    wsi:nextStep wsi:Evaluation .
-
-wsi:Evaluation rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:CSV ;
-    wsi:usesAlgorithm wsi:AUC_ROC ;
-    wsi:hasParameter wsi:mann_whitney_u_statistic ;
-    wsi:hasParameter wsi:delong_method_95_percent_ci ;
-    wsi:hasParameter wsi:delong_test_two_tailed .
+wsi:Attention_Heatmap_Visualization rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Percentile_Normalization ;
+    wsi:hasParameter wsi:Colormap_Diverging_Red_Blue ;
+    wsi:hasParameter wsi:Transparency_0.5 ;
+    wsi:hasParameter wsi:Overlap_95_percent ;
+    wsi:hasParameter wsi:ROI_Tiling_8000x8000 .
