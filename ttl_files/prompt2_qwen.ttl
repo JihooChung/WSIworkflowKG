@@ -1,0 +1,92 @@
+wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
+    wsi:hasPurpose "To develop a weakly-supervised deep learning framework (CLAM) for multi-class classification of whole slide images (WSIs) in computational pathology using attention-based pooling and instance-level clustering to improve model interpretability and performance." ;
+    wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" ;
+    wsi:hasMethodology wsi:Patch_Extraction .
+
+wsi:Patch_Extraction rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:SVS ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:nextStep wsi:Feature_Extraction .
+
+wsi:Feature_Extraction rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:hasParameter wsi:patch_size_256 ;
+    wsi:hasParameter wsi:magnification_20x ;
+    wsi:hasParameter wsi:batch_size_128 ;
+    wsi:hasParameter wsi:adaptive_mean_pooling ;
+    wsi:nextStep wsi:Classification .
+
+wsi:Classification rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:CSV ;
+    wsi:usesAlgorithm wsi:CLAM ;
+    wsi:hasParameter wsi:attention_pooling ;
+    wsi:hasParameter wsi:instance_level_clustering ;
+    wsi:hasParameter wsi:smooth_svm_loss ;
+    wsi:hasParameter wsi:mutual_exclusivity_assumption ;
+    wsi:hasParameter wsi:batch_size_1 ;
+    wsi:hasParameter wsi:learning_rate_2e-4 ;
+    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
+    wsi:hasParameter wsi:adam_optimizer ;
+    wsi:hasParameter wsi:early_stopping_20_epochs ;
+    wsi:hasParameter wsi:c1_0_7 ;
+    wsi:hasParameter wsi:c2_0_3 ;
+    wsi:hasParameter wsi:B_8 ;
+    wsi:hasParameter wsi:alpha_1_0 ;
+    wsi:hasParameter wsi:tau_1_0 ;
+    wsi:nextStep wsi:Visualization .
+
+wsi:Visualization rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:PNG ;
+    wsi:usesAlgorithm wsi:PCA ;
+    wsi:hasParameter wsi:components_50 ;
+    wsi:hasParameter wsi:colormap_diverging ;
+    wsi:hasParameter wsi:transparency_0_5 ;
+    wsi:hasParameter wsi:overlap_95_percent ;
+    wsi:nextStep wsi:Interpretation .
+
+wsi:Interpretation rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:PNG ;
+    wsi:usesAlgorithm wsi:Attention_Heatmap ;
+    wsi:hasParameter wsi:percentile_normalization ;
+    wsi:hasParameter wsi:overlap_95_percent ;
+    wsi:hasParameter wsi:colormap_diverging ;
+    wsi:hasParameter wsi:transparency_0_5 ;
+    wsi:nextStep wsi:Comparative_Analysis .
+
+wsi:Comparative_Analysis rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:CSV ;
+    wsi:usesAlgorithm wsi:MIL ;
+    wsi:hasParameter wsi:max_pooling ;
+    wsi:hasParameter wsi:batch_size_1 ;
+    wsi:hasParameter wsi:learning_rate_2e-4 ;
+    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
+    wsi:hasParameter wsi:adam_optimizer ;
+    wsi:hasParameter wsi:early_stopping_20_epochs ;
+    wsi:nextStep wsi:Multi_Class_MIL .
+
+wsi:Multi_Class_MIL rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:CSV ;
+    wsi:usesAlgorithm wsi:mMIL ;
+    wsi:hasParameter wsi:max_pooling ;
+    wsi:hasParameter wsi:batch_size_1 ;
+    wsi:hasParameter wsi:learning_rate_2e-4 ;
+    wsi:hasParameter wsi:l2_weight_decay_1e-5 ;
+    wsi:hasParameter wsi:adam_optimizer ;
+    wsi:hasParameter wsi:early_stopping_20_epochs ;
+    wsi:nextStep wsi:Evaluation .
+
+wsi:Evaluation rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:CSV ;
+    wsi:usesAlgorithm wsi:AUC_ROC ;
+    wsi:hasParameter wsi:mann_whitney_u_statistic ;
+    wsi:hasParameter wsi:delong_method_95_percent_ci ;
+    wsi:hasParameter wsi:delong_test_two_tailed .
