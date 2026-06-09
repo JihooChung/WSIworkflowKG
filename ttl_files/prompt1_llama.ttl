@@ -1,0 +1,65 @@
+@prefix wsi: <http://example.org/wsi-workflow#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+wsi:Research_Paper
+    a wsi:Research_Paper ;
+    rdfs:label "CLAM" ;
+    wsi:hasPurpose "High-throughput deep learning empowered toolbox for weakly-supervised classification tasks in computational pathology" ;
+    wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" .
+
+wsi:WSI_Step
+    a wsi:WSI_Step ;
+    rdfs:label "WSI Processing Step" ;
+    wsi:nextStep wsi:Segmentation ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:hasInputFormat "SVS" ;
+    wsi:hasOutputFormat "H5" .
+
+wsi:Segmentation
+    a wsi:WSI_Step ;
+    rdfs:label "Segmentation" ;
+    wsi:nextStep wsi:Patching ;
+    wsi:usesAlgorithm wsi:Thresholding ;
+    wsi:hasInputFormat "SVS" ;
+    wsi:hasOutputFormat "TIFF" .
+
+wsi:Patching
+    a wsi:WSI_Step ;
+    rdfs:label "Patching" ;
+    wsi:nextStep wsi:Feature_Extraction ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:hasInputFormat "TIFF" ;
+    wsi:hasOutputFormat "H5" .
+
+wsi:Feature_Extraction
+    a wsi:WSI_Step ;
+    rdfs:label "Feature Extraction" ;
+    wsi:nextStep wsi:Classification ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:hasInputFormat "H5" ;
+    wsi:hasOutputFormat "H5" .
+
+wsi:Classification
+    a wsi:WSI_Step ;
+    rdfs:label "Classification" ;
+    wsi:usesAlgorithm wsi:Softmax ;
+    wsi:hasInputFormat "H5" ;
+    wsi:hasOutputFormat "H5" .
+
+wsi:ResNet50
+    a wsi:Algorithm ;
+    rdfs:label "ResNet50" ;
+    wsi:hasParameter "patch_size=256" ;
+    wsi:hasParameter "batch_size=128" .
+
+wsi:Thresholding
+    a wsi:Algorithm ;
+    rdfs:label "Thresholding" ;
+    wsi:hasParameter "threshold=0.5" .
+
+wsi:Softmax
+    a wsi:Algorithm ;
+    rdfs:label "Softmax" ;
+    wsi:hasParameter "temperature=1.0" .
