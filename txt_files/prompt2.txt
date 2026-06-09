@@ -48,3 +48,4 @@ wsi:Algorithm_Name rdf:type wsi:Algorithm ;
 1. COMPREHENSIVENESS: Do not summarize or omit anything. Analyze the entire input text and extract EVERY single WSI_Step, Algorithm, Parameter, and Data_Format mentioned. 
 2. CHAIN OF STEPS: Ensure that all WSI_Steps are sequentially linked using the `wsi:nextStep` property from the first step to the very last step.
 3. FORMAT: Return ONLY the raw Turtle/RDF text. Do not include markdown code blocks (```turtle), introductions, or conclusions. Start directly with the data.
+4. FAITHFULNESS / NO HALLUCINATION: Do not invent, assume, or extrapolate any relationships or properties that are not explicitly stated in the input text. Only use the properties defined in the given instructions (e.g., wsi:nextStep, ex:usedAlgorithm). If a relationship is not directly mentioned, do not create it.
