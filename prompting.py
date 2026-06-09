@@ -3,6 +3,7 @@ import requests
 
 url = "https://chat-ai.academiccloud.de/v1/chat/completions"
 api_key = 'API_KEY'
+model = "qwen3-30b-a3b-instruct-2507"
 
 prompt = 'PROMPT'
 input = 'INPUT'
@@ -15,7 +16,7 @@ headers = {
 }
 
 data = {
-    "model": "qwen3-30b-a3b-instruct-2507",
+    "model": model,
     "messages": [
         {"role": "system", "content": prompt},
         {"role": "user", "content": input},
