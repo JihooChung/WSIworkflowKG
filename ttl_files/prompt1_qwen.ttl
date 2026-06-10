@@ -1,48 +1,90 @@
-<https://example.org/wsi-workflow#CLAM_Paper> a wsi:Research_Paper ;
-    wsi:hasPurpose "A high-throughput deep learning toolbox for weakly-supervised classification of whole slide images (WSIs) in computational pathology using clustering-constrained attention multiple instance learning (CLAM)" ;
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix wsi: <http://example.org/wsi-workflow#> .
+
+wsi:Research_Paper_1 rdf:type wsi:Research_Paper ;
+    rdfs:label "CLAM: Clustering-constrained Attention Multiple Instance Learning" ;
+    wsi:hasPurpose "To develop a weakly-supervised deep learning framework for multi-class classification of whole slide images (WSIs) in computational pathology using attention-based pooling and instance-level clustering to improve model interpretability and performance." ;
     wsi:hasGithubRepo <https://github.com/mahmoodlab/CLAM> ;
     wsi:hasMethodology wsi:Patch_Extraction .
 
-wsi:Patch_Extraction a wsi:WSI_Step ;
+wsi:Patch_Extraction rdf:type wsi:WSI_Step ;
+    rdfs:label "Patch Extraction" ;
     wsi:hasInputFormat wsi:SVS ;
     wsi:hasOutputFormat wsi:H5 ;
     wsi:usesAlgorithm wsi:ResNet50 ;
     wsi:nextStep wsi:Feature_Extraction .
 
-wsi:Feature_Extraction a wsi:WSI_Step ;
+wsi:Feature_Extraction rdf:type wsi:WSI_Step ;
+    rdfs:label "Feature Extraction" ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
     wsi:usesAlgorithm wsi:ResNet50 ;
-    wsi:hasParameter wsi:patch_size_256 ;
-    wsi:hasParameter wsi:magnification_20x ;
-    wsi:hasParameter wsi:batch_size_128 ;
     wsi:nextStep wsi:Classification .
 
-wsi:Classification a wsi:WSI_Step ;
+wsi:Classification rdf:type wsi:WSI_Step ;
+    rdfs:label "Classification" ;
     wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:TXT ;
     wsi:usesAlgorithm wsi:CLAM ;
-    wsi:hasParameter wsi:attention_branches_n ;
+    wsi:nextStep wsi:Visualization .
+
+wsi:CLAM rdf:type wsi:Algorithm ;
+    rdfs:label "Clustering-constrained Attention Multiple Instance Learning" ;
+    wsi:hasParameter wsi:patch_size_256 ;
+    wsi:hasParameter wsi:batch_size_128 ;
+    wsi:hasParameter wsi:attention_heads_512 ;
     wsi:hasParameter wsi:clustering_B_8 ;
-    wsi:hasParameter wsi:loss_c1_0.7 ;
-    wsi:hasParameter wsi:loss_c2_0.3 ;
+    wsi:hasParameter wsi:margin_alpha_1_0 ;
+    wsi:hasParameter wsi:temperature_tau_1_0 ;
     wsi:hasParameter wsi:learning_rate_2e-4 ;
     wsi:hasParameter wsi:weight_decay_1e-5 ;
     wsi:hasParameter wsi:early_stopping_patience_20 ;
-    wsi:hasParameter wsi:epochs_50_to_200 ;
-    wsi:hasParameter wsi:adam_optimizer ;
-    wsi:hasParameter wsi:smooth_SVM_loss ;
-    wsi:hasParameter wsi:mutual_exclusivity_assumption ;
-    wsi:hasParameter wsi:multinomial_sampling ;
-    wsi:nextStep wsi:Visualization .
+    wsi:hasParameter wsi:epochs_50_to_200 .
 
-wsi:Visualization a wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:CSV ;
-    wsi:hasOutputFormat wsi:PNG ;
-    wsi:usesAlgorithm wsi:PCA ;
-    wsi:usesAlgorithm wsi:Attention_Heatmap ;
-    wsi:hasParameter wsi:components_50 ;
-    wsi:hasParameter wsi:colormap_diverging ;
-    wsi:hasParameter wsi:transparency_0.5 ;
-    wsi:hasParameter wsi:overlap_95_percent ;
-    wsi:hasParameter wsi:percentile_normalization .
+wsi:ResNet50 rdf:type wsi:Algorithm ;
+    rdfs:label "ResNet50" ;
+    wsi:hasParameter wsi:pretrained_ImageNet ;
+    wsi:hasParameter wsi:adaptive_mean_pooling_after_3rd_residual_block ;
+    wsi:hasParameter wsi:batch_size_128 .
+
+wsi:patch_size_256 rdf:type wsi:Parameter ;
+    rdfs:label "patch_size=256" .
+
+wsi:batch_size_128 rdf:type wsi:Parameter ;
+    rdfs:label "batch_size=128" .
+
+wsi:attention_heads_512 rdf:type wsi:Parameter ;
+    rdfs:label "attention_heads=512" .
+
+wsi:clustering_B_8 rdf:type wsi:Parameter ;
+    rdfs:label "B=8" .
+
+wsi:margin_alpha_1_0 rdf:type wsi:Parameter ;
+    rdfs:label "margin=1.0" .
+
+wsi:temperature_tau_1_0 rdf:type wsi:Parameter ;
+    rdfs:label "temperature=1.0" .
+
+wsi:learning_rate_2e-4 rdf:type wsi:Parameter ;
+    rdfs:label "learning_rate=2e-4" .
+
+wsi:weight_decay_1e-5 rdf:type wsi:Parameter ;
+    rdfs:label "weight_decay=1e-5" .
+
+wsi:early_stopping_patience_20 rdf:type wsi:Parameter ;
+    rdfs:label "early_stopping_patience=20" .
+
+wsi:epochs_50_to_200 rdf:type wsi:Parameter ;
+    rdfs:label "epochs=50 to 200" .
+
+wsi:SVS rdf:type wsi:Data_Format ;
+    rdfs:label "SVS" .
+
+wsi:H5 rdf:type wsi:Data_Format ;
+    rdfs:label "H5" .
+
+wsi:TXT rdf:type wsi:Data_Format ;
+    rdfs:label "TXT" .
