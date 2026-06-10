@@ -1,0 +1,151 @@
+wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
+    wsi:hasPurpose "CLAM is a high-throughput deep learning empowered toolbox designed to solve weakly-supervised classification tasks in computational pathology." ;
+    wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" ;
+    wsi:hasMethodology wsi:WSI_Step_Patching .
+
+wsi:WSI_Step_Patching rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:SVS ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Patching ;
+    wsi:nextStep wsi:WSI_Step_Feature_Extraction .
+
+wsi:Algorithm_Patching rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Patching .
+
+wsi:Parameter_Patching rdf:type wsi:Parameter ;
+    wsi:hasValue "256" .
+
+wsi:WSI_Step_Feature_Extraction rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Feature_Extraction ;
+    wsi:nextStep wsi:WSI_Step_Attention .
+
+wsi:Algorithm_Feature_Extraction rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Feature_Extraction .
+
+wsi:Parameter_Feature_Extraction rdf:type wsi:Parameter ;
+    wsi:hasValue "ResNet50" .
+
+wsi:WSI_Step_Attention rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Attention ;
+    wsi:nextStep wsi:WSI_Step_Clustering .
+
+wsi:Algorithm_Attention rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Attention .
+
+wsi:Parameter_Attention rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_Clustering rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Clustering ;
+    wsi:nextStep wsi:WSI_Step_Smooth_SVM .
+
+wsi:Algorithm_Clustering rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Clustering .
+
+wsi:Parameter_Clustering rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_Smooth_SVM rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Smooth_SVM ;
+    wsi:nextStep wsi:WSI_Step_Visualization .
+
+wsi:Algorithm_Smooth_SVM rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Smooth_SVM .
+
+wsi:Parameter_Smooth_SVM rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_Visualization rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Visualization ;
+    wsi:nextStep wsi:WSI_Step_Comparative_Analysis .
+
+wsi:Algorithm_Visualization rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Visualization .
+
+wsi:Parameter_Visualization rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_Comparative_Analysis rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Comparative_Analysis ;
+    wsi:nextStep wsi:WSI_Step_MIL .
+
+wsi:Algorithm_Comparative_Analysis rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Comparative_Analysis .
+
+wsi:Parameter_Comparative_Analysis rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_MIL rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_MIL ;
+    wsi:nextStep wsi:WSI_Step_mMIL .
+
+wsi:Algorithm_MIL rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_MIL .
+
+wsi:Parameter_MIL rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_mMIL rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_mMIL ;
+    wsi:nextStep wsi:WSI_Step_Final .
+
+wsi:Algorithm_mMIL rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_mMIL .
+
+wsi:Parameter_mMIL rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_Final rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Final ;
+    wsi:nextStep wsi:WSI_Step_End .
+
+wsi:Algorithm_Final rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Final .
+
+wsi:Parameter_Final rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:WSI_Step_End rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_End ;
+    wsi:nextStep wsi:None .
+
+wsi:Algorithm_End rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_End .
+
+wsi:Parameter_End rdf:type wsi:Parameter ;
+    wsi:hasValue "1.0" .
+
+wsi:SVS rdf:type wsi:Data_Format .
+wsi:H5 rdf:type wsi:Data_Format .
+
+wsi:Parameter_Patching rdf:type wsi:Parameter .
+wsi:Parameter_Feature_Extraction rdf:type wsi:Parameter .
+wsi:Parameter_Attention rdf:type wsi:Parameter .
+wsi:Parameter_Clustering rdf:type wsi:Parameter .
+wsi:Parameter_Smooth_SVM rdf:type wsi:Parameter .
+wsi:Parameter_Visualization rdf:type wsi:Parameter .
+wsi:Parameter_Comparative_Analysis rdf:type wsi:Parameter .
+wsi:Parameter_MIL rdf:type wsi:Parameter .
+wsi:Parameter_mMIL rdf:type wsi:Parameter .
+wsi:Parameter_Final rdf:type wsi:Parameter .
+wsi:Parameter_End rdf:type wsi:Parameter .
