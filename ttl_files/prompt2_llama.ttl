@@ -1,50 +1,118 @@
-@prefix wsi: <http://example.org/wsi-workflow#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
+    wsi:hasPurpose "CLAM is a high-throughput deep learning empowered toolbox designed to solve weakly-supervised classification tasks in computational pathology." ;
+    wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" ;
+    wsi:hasMethodology wsi:WSI_Step_Patching .
 
-wsi:Research_Paper_Sample rdf:type wsi:Research_Paper ;
-    wsi:hasPurpose "Sample purpose description here." ;
-    wsi:hasGithubRepo "https://github.com/sample/repo" ;
-    wsi:hasMethodology wsi:CLAM .
-
-wsi:CLAM rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Patching rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:SVS ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:ResNet50 ;
-    wsi:nextStep wsi:Instance_Level_Clustering .
+    wsi:usesAlgorithm wsi:Algorithm_ResNet50 ;
+    wsi:nextStep wsi:WSI_Step_Feature_Extraction .
 
-wsi:Instance_Level_Clustering rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Feature_Extraction rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Smooth_SVM_Loss ;
-    wsi:nextStep wsi:Model_Selection .
+    wsi:usesAlgorithm wsi:Algorithm_ResNet50 ;
+    wsi:nextStep wsi:WSI_Step_Instance_Level_Clustering .
 
-wsi:Model_Selection rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Instance_Level_Clustering rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Early_Stopping ;
-    wsi:nextStep wsi:Training_Details .
+    wsi:usesAlgorithm wsi:Algorithm_Instance_Level_Clustering ;
+    wsi:nextStep wsi:WSI_Step_Smooth_SVM_Loss .
 
-wsi:Training_Details rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Smooth_SVM_Loss rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Adam_Optimizer ;
-    wsi:nextStep wsi:Model_Selection .
+    wsi:usesAlgorithm wsi:Algorithm_Smooth_SVM_Loss ;
+    wsi:nextStep wsi:WSI_Step_Model_Selection .
 
-wsi:ResNet50 rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Patch_Size=256 ;
-    wsi:hasParameter wsi:Batch_Size=128 .
+wsi:WSI_Step_Model_Selection rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Model_Selection ;
+    wsi:nextStep wsi:WSI_Step_Visualization .
 
-wsi:Smooth_SVM_Loss rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Margin=1.0 ;
-    wsi:hasParameter wsi:Temperature_Scaling=1.0 .
+wsi:WSI_Step_Visualization rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Visualization ;
+    wsi:nextStep wsi:WSI_Step_Comparative_Analysis .
 
-wsi:Early_Stopping rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Patience=20 ;
-    wsi:hasParameter wsi:Min_Delta=0.0 .
+wsi:WSI_Step_Comparative_Analysis rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Comparative_Analysis ;
+    wsi:nextStep wsi:WSI_Step_Multiple_Instance_Learning .
 
-wsi:Adam_Optimizer rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Learning_Rate=2e-4 ;
-    wsi:hasParameter wsi:Weight_Decay=1e-5 .
+wsi:WSI_Step_Multiple_Instance_Learning rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Multiple_Instance_Learning ;
+    wsi:nextStep wsi:WSI_Step_Multi_Class_Implementation .
+
+wsi:WSI_Step_Multi_Class_Implementation rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Multi_Class_Implementation ;
+    wsi:nextStep wsi:WSI_Step_Training_Details .
+
+wsi:WSI_Step_Training_Details rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Training_Details .
+
+wsi:Algorithm_ResNet50 rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Patch_Size_256 .
+
+wsi:Algorithm_Instance_Level_Clustering rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Instance_Level_Clustering .
+
+wsi:Algorithm_Smooth_SVM_Loss rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Smooth_SVM_Loss .
+
+wsi:Algorithm_Model_Selection rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Model_Selection .
+
+wsi:Algorithm_Visualization rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Visualization .
+
+wsi:Algorithm_Comparative_Analysis rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Comparative_Analysis .
+
+wsi:Algorithm_Multiple_Instance_Learning rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Multiple_Instance_Learning .
+
+wsi:Algorithm_Multi_Class_Implementation rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Multi_Class_Implementation .
+
+wsi:Algorithm_Training_Details rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Training_Details .
+
+wsi:Parameter_Patch_Size_256 rdf:type wsi:Parameter ;
+    wsi:hasValue "256" .
+
+wsi:Parameter_Instance_Level_Clustering rdf:type wsi:Parameter ;
+    wsi:hasValue "Instance-Level Clustering" .
+
+wsi:Parameter_Smooth_SVM_Loss rdf:type wsi:Parameter ;
+    wsi:hasValue "Smooth SVM Loss" .
+
+wsi:Parameter_Model_Selection rdf:type wsi:Parameter ;
+    wsi:hasValue "Model Selection" .
+
+wsi:Parameter_Visualization rdf:type wsi:Parameter ;
+    wsi:hasValue "Visualization" .
+
+wsi:Parameter_Comparative_Analysis rdf:type wsi:Parameter ;
+    wsi:hasValue "Comparative Analysis" .
+
+wsi:Parameter_Multiple_Instance_Learning rdf:type wsi:Parameter ;
+    wsi:hasValue "Multiple Instance Learning" .
+
+wsi:Parameter_Multi_Class_Implementation rdf:type wsi:Parameter ;
+    wsi:hasValue "Multi-Class Implementation" .
+
+wsi:Parameter_Training_Details rdf:type wsi:Parameter ;
+    wsi:hasValue "Training Details" .
+```
