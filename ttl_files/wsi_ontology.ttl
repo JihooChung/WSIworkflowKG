@@ -29,11 +29,11 @@ wsi:Data_Format rdf:type owl:Class ;
 ### --------------------------------------------------
 
 
-wsi:hasPurpose rdf:type owl:ObjectProperty ;
+wsi:hasPurpose rdf:type owl:DatatypeProperty ;
     rdfs:domain wsi:Research_Paper ;
     rdfs:range xsd:string .
 
-wsi:hasGithubRepo rdf:type owl:ObjectProperty ;
+wsi:hasGithubRepo rdf:type owl:DatatypeProperty ;
     rdfs:domain wsi:Research_Paper ;
     rdfs:range xsd:anyURI .
 
