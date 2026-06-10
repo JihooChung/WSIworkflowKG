@@ -6,62 +6,32 @@ wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
 wsi:WSI_Step_Patching rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:SVS ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Patching ;
+    wsi:usesAlgorithm wsi:Algorithm_ResNet50 ;
     wsi:nextStep wsi:WSI_Step_Feature_Extraction .
-
-wsi:Algorithm_Patching rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Patching .
-
-wsi:Parameter_Patching rdf:type wsi:Parameter ;
-    wsi:hasValue "256" .
 
 wsi:WSI_Step_Feature_Extraction rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Feature_Extraction ;
-    wsi:nextStep wsi:WSI_Step_Attention .
+    wsi:usesAlgorithm wsi:Algorithm_ResNet50 ;
+    wsi:nextStep wsi:WSI_Step_Instance_Level_Clustering .
 
-wsi:Algorithm_Feature_Extraction rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Feature_Extraction .
-
-wsi:Parameter_Feature_Extraction rdf:type wsi:Parameter ;
-    wsi:hasValue "ResNet50" .
-
-wsi:WSI_Step_Attention rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Instance_Level_Clustering rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Attention ;
-    wsi:nextStep wsi:WSI_Step_Clustering .
+    wsi:usesAlgorithm wsi:Algorithm_Instance_Level_Clustering ;
+    wsi:nextStep wsi:WSI_Step_Smooth_SVM_Loss .
 
-wsi:Algorithm_Attention rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Attention .
-
-wsi:Parameter_Attention rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
-wsi:WSI_Step_Clustering rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Smooth_SVM_Loss rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Clustering ;
-    wsi:nextStep wsi:WSI_Step_Smooth_SVM .
+    wsi:usesAlgorithm wsi:Algorithm_Smooth_SVM_Loss ;
+    wsi:nextStep wsi:WSI_Step_Model_Selection .
 
-wsi:Algorithm_Clustering rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Clustering .
-
-wsi:Parameter_Clustering rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
-wsi:WSI_Step_Smooth_SVM rdf:type wsi:WSI_Step ;
+wsi:WSI_Step_Model_Selection rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Smooth_SVM ;
+    wsi:usesAlgorithm wsi:Algorithm_Model_Selection ;
     wsi:nextStep wsi:WSI_Step_Visualization .
-
-wsi:Algorithm_Smooth_SVM rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Smooth_SVM .
-
-wsi:Parameter_Smooth_SVM rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
 
 wsi:WSI_Step_Visualization rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
@@ -69,83 +39,78 @@ wsi:WSI_Step_Visualization rdf:type wsi:WSI_Step ;
     wsi:usesAlgorithm wsi:Algorithm_Visualization ;
     wsi:nextStep wsi:WSI_Step_Comparative_Analysis .
 
-wsi:Algorithm_Visualization rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Visualization .
-
-wsi:Parameter_Visualization rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
 wsi:WSI_Step_Comparative_Analysis rdf:type wsi:WSI_Step ;
     wsi:hasInputFormat wsi:H5 ;
     wsi:hasOutputFormat wsi:H5 ;
     wsi:usesAlgorithm wsi:Algorithm_Comparative_Analysis ;
-    wsi:nextStep wsi:WSI_Step_MIL .
+    wsi:nextStep wsi:WSI_Step_Data_Availability .
+
+wsi:WSI_Step_Data_Availability rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Data_Availability ;
+    wsi:nextStep wsi:WSI_Step_Code_Availability .
+
+wsi:WSI_Step_Code_Availability rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:Algorithm_Code_Availability ;
+    wsi:nextStep wsi:WSI_Step_End .
+
+wsi:Algorithm_ResNet50 rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Patch_Size ;
+    wsi:hasParameter wsi:Parameter_Batch_Size .
+
+wsi:Algorithm_Instance_Level_Clustering rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Instance_Level_Clustering .
+
+wsi:Algorithm_Smooth_SVM_Loss rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Smooth_SVM_Loss .
+
+wsi:Algorithm_Model_Selection rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Model_Selection .
+
+wsi:Algorithm_Visualization rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Visualization .
 
 wsi:Algorithm_Comparative_Analysis rdf:type wsi:Algorithm ;
     wsi:hasParameter wsi:Parameter_Comparative_Analysis .
 
+wsi:Algorithm_Data_Availability rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Data_Availability .
+
+wsi:Algorithm_Code_Availability rdf:type wsi:Algorithm ;
+    wsi:hasParameter wsi:Parameter_Code_Availability .
+
+wsi:Parameter_Patch_Size rdf:type wsi:Parameter ;
+    wsi:value 256 .
+
+wsi:Parameter_Batch_Size rdf:type wsi:Parameter ;
+    wsi:value 128 .
+
+wsi:Parameter_Instance_Level_Clustering rdf:type wsi:Parameter ;
+    wsi:value 8 .
+
+wsi:Parameter_Smooth_SVM_Loss rdf:type wsi:Parameter ;
+    wsi:value 1.0 .
+
+wsi:Parameter_Model_Selection rdf:type wsi:Parameter ;
+    wsi:value 20 .
+
+wsi:Parameter_Visualization rdf:type wsi:Parameter ;
+    wsi:value 2 .
+
 wsi:Parameter_Comparative_Analysis rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
+    wsi:value 1 .
 
-wsi:WSI_Step_MIL rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_MIL ;
-    wsi:nextStep wsi:WSI_Step_mMIL .
+wsi:Parameter_Data_Availability rdf:type wsi:Parameter ;
+    wsi:value 1 .
 
-wsi:Algorithm_MIL rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_MIL .
+wsi:Parameter_Code_Availability rdf:type wsi:Parameter ;
+    wsi:value 1 .
 
-wsi:Parameter_MIL rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
+wsi:Data_Format_SVS rdf:type wsi:Data_Format ;
+    wsi:format "SVS" .
 
-wsi:WSI_Step_mMIL rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_mMIL ;
-    wsi:nextStep wsi:WSI_Step_Final .
-
-wsi:Algorithm_mMIL rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_mMIL .
-
-wsi:Parameter_mMIL rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
-wsi:WSI_Step_Final rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_Final ;
-    wsi:nextStep wsi:WSI_Step_End .
-
-wsi:Algorithm_Final rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Final .
-
-wsi:Parameter_Final rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
-wsi:WSI_Step_End rdf:type wsi:WSI_Step ;
-    wsi:hasInputFormat wsi:H5 ;
-    wsi:hasOutputFormat wsi:H5 ;
-    wsi:usesAlgorithm wsi:Algorithm_End ;
-    wsi:nextStep wsi:None .
-
-wsi:Algorithm_End rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_End .
-
-wsi:Parameter_End rdf:type wsi:Parameter ;
-    wsi:hasValue "1.0" .
-
-wsi:SVS rdf:type wsi:Data_Format .
-wsi:H5 rdf:type wsi:Data_Format .
-
-wsi:Parameter_Patching rdf:type wsi:Parameter .
-wsi:Parameter_Feature_Extraction rdf:type wsi:Parameter .
-wsi:Parameter_Attention rdf:type wsi:Parameter .
-wsi:Parameter_Clustering rdf:type wsi:Parameter .
-wsi:Parameter_Smooth_SVM rdf:type wsi:Parameter .
-wsi:Parameter_Visualization rdf:type wsi:Parameter .
-wsi:Parameter_Comparative_Analysis rdf:type wsi:Parameter .
-wsi:Parameter_MIL rdf:type wsi:Parameter .
-wsi:Parameter_mMIL rdf:type wsi:Parameter .
-wsi:Parameter_Final rdf:type wsi:Parameter .
-wsi:Parameter_End rdf:type wsi:Parameter .
+wsi:Data_Format_H5 rdf:type wsi:Data_Format ;
+    wsi:format "H5" .
