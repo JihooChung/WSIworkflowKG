@@ -21,9 +21,10 @@ The extracted data must strictly follow these Entity Types and Relation rules:
 - WSI_Step -> hasInputFormat -> Data_Format (Input file format)
 - WSI_Step -> hasOutputFormat -> Data_Format (Output file format)
 
-### 2. Strict Syntax Rules (CRITICAL)
+### 2. Strict Syntax & Structural Rules (CRITICAL)
 - DO NOT use abbreviations like 'a'. Always use 'rdf:type'.
 - DO NOT invent or use properties not listed in the rules (e.g., DO NOT use rdfs:label).
+- DO NOT connect 'wsi:hasParameter' directly to a 'wsi:WSI_Step'. It MUST always be connected to an 'wsi:Algorithm' (Domain: Algorithm -> hasParameter -> Parameter).
 - All instances must use the standard prefix format `wsi:Entity_Name` (e.g., `wsi:Research_Paper_CLAM`, `wsi:Patch_Extraction`). DO NOT write full URLs like `<https://example.org/...>`.
 - Normalize all entity names by converting spaces to underscores and using English.
 
@@ -42,7 +43,7 @@ wsi:Step_1_Name rdf:type wsi:WSI_Step ;
     wsi:nextStep wsi:Step_2_Name .
 
 wsi:Algorithm_Name rdf:type wsi:Algorithm ;
-    wsi:hasParameter wsi:Parameter_Name .
+    wsi:hasParameter wsi:Parameter_Name_1 .
 
 wsi:SVS rdf:type wsi:Data_Format .
 wsi:H5 rdf:type wsi:Data_Format .
