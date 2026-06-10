@@ -1,0 +1,93 @@
+wsi:Research_Paper_CLAM rdf:type wsi:Research_Paper ;
+    wsi:hasPurpose "To develop a high-throughput deep learning framework, CLAM, for weakly-supervised multi-class classification in computational pathology using whole slide images (WSIs) with slide-level labels but no pixel-level annotations, leveraging attention-based pooling and instance-level clustering to improve model interpretability and performance." ;
+    wsi:hasGithubRepo "https://github.com/mahmoodlab/CLAM" ;
+    wsi:hasMethodology wsi:Patch_Extraction .
+
+wsi:Patch_Extraction rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:SVS ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:nextStep wsi:Feature_Extraction .
+
+wsi:Feature_Extraction rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:H5 ;
+    wsi:usesAlgorithm wsi:ResNet50 ;
+    wsi:hasParameter wsi:patch_size_256 ;
+    wsi:hasParameter wsi:magnification_20x ;
+    wsi:hasParameter wsi:batch_size_128 ;
+    wsi:hasParameter wsi:adaptive_mean_pooling ;
+    wsi:nextStep wsi:Classification .
+
+wsi:Classification rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:H5 ;
+    wsi:hasOutputFormat wsi:CSV ;
+    wsi:usesAlgorithm wsi:CLAM ;
+    wsi:hasParameter wsi:attention_pooling ;
+    wsi:hasParameter wsi:instance_level_clustering ;
+    wsi:hasParameter wsi:smooth_SVM_loss ;
+    wsi:hasParameter wsi:margin_alpha_1_0 ;
+    wsi:hasParameter wsi:temperature_tau_1_0 ;
+    wsi:hasParameter wsi:clustering_B_8 ;
+    wsi:hasParameter wsi:loss_weight_c1_0_7 ;
+    wsi:hasParameter wsi:loss_weight_c2_0_3 ;
+    wsi:hasParameter wsi:learning_rate_2e-4 ;
+    wsi:hasParameter wsi:weight_decay_1e-5 ;
+    wsi:hasParameter wsi:early_stopping_20_epochs ;
+    wsi:hasParameter wsi:batch_size_1 ;
+    wsi:hasParameter wsi:multinomial_sampling_inversely_proportional_to_class_frequency ;
+    wsi:nextStep wsi:Visualization .
+
+wsi:Visualization rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:PNG ;
+    wsi:usesAlgorithm wsi:PCA ;
+    wsi:hasParameter wsi:components_50 ;
+    wsi:hasParameter wsi:colormap_diverging ;
+    wsi:hasParameter wsi:transparency_0_5 ;
+    wsi:hasParameter wsi:overlap_95_percent ;
+    wsi:nextStep wsi:Interpretation .
+
+wsi:Interpretation rdf:type wsi:WSI_Step ;
+    wsi:hasInputFormat wsi:CSV ;
+    wsi:hasOutputFormat wsi:PNG ;
+    wsi:usesAlgorithm wsi:Attention_Heatmap ;
+    wsi:hasParameter wsi:attention_scores_normalized_to_percentile ;
+    wsi:hasParameter wsi:colormap_diverging ;
+    wsi:hasParameter wsi:transparency_0_5 ;
+    wsi:hasParameter wsi:overlap_95_percent ;
+    wsi:hasParameter wsi:normalize_over_entire_slide_without_overlap .
+
+wsi:SVS rdf:type wsi:Data_Format .
+wsi:H5 rdf:type wsi:Data_Format .
+wsi:CSV rdf:type wsi:Data_Format .
+wsi:PNG rdf:type wsi:Data_Format .
+
+wsi:ResNet50 rdf:type wsi:Algorithm .
+wsi:CLAM rdf:type wsi:Algorithm .
+wsi:PCA rdf:type wsi:Algorithm .
+wsi:Attention_Heatmap rdf:type wsi:Algorithm .
+
+wsi:patch_size_256 rdf:type wsi:Parameter .
+wsi:magnification_20x rdf:type wsi:Parameter .
+wsi:batch_size_128 rdf:type wsi:Parameter .
+wsi:adaptive_mean_pooling rdf:type wsi:Parameter .
+wsi:attention_pooling rdf:type wsi:Parameter .
+wsi:instance_level_clustering rdf:type wsi:Parameter .
+wsi:smooth_SVM_loss rdf:type wsi:Parameter .
+wsi:margin_alpha_1_0 rdf:type wsi:Parameter .
+wsi:temperature_tau_1_0 rdf:type wsi:Parameter .
+wsi:clustering_B_8 rdf:type wsi:Parameter .
+wsi:loss_weight_c1_0_7 rdf:type wsi:Parameter .
+wsi:loss_weight_c2_0_3 rdf:type wsi:Parameter .
+wsi:learning_rate_2e-4 rdf:type wsi:Parameter .
+wsi:weight_decay_1e-5 rdf:type wsi:Parameter .
+wsi:early_stopping_20_epochs rdf:type wsi:Parameter .
+wsi:batch_size_1 rdf:type wsi:Parameter .
+wsi:multinomial_sampling_inversely_proportional_to_class_frequency rdf:type wsi:Parameter .
+wsi:components_50 rdf:type wsi:Parameter .
+wsi:colormap_diverging rdf:type wsi:Parameter .
+wsi:transparency_0_5 rdf:type wsi:Parameter .
+wsi:overlap_95_percent rdf:type wsi:Parameter .
+wsi:attention_scores_normalized_to_percentile rdf:type wsi:Parameter .
+wsi:normalize_over_entire_slide_without_overlap rdf:type wsi:Parameter .
